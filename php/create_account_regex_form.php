@@ -108,33 +108,32 @@ if (isset($_POST["Submit"])) {
         $status = 1;
     }
 }
-    
-
-
-
-    if($status == 0){
-        // Prepare the statements for inserting data into the artists and signin tables
-        $stmt = mysqli_prepare($conn, "INSERT INTO clients771 (username771, clientName771, clientCity771, companyName771, clientCompPassword771) VALUES (?,?,?,?,?)");
-        // Bind the variables to the prepared statements
-        mysqli_stmt_bind_param($stmt, "sssss", $username_entry, $client_name_entry, $client_city_entry, $company_name_entry, $hashed_password);
-        // Execute the prepared statements and check if the data was inserted successfully
-        if (mysqli_stmt_execute($stmt)) {
-        $message2 = "Data inserted into the signin table successfully.";
-        } else {
-        $message2 = "Error inserting data into the signin table: " . mysqli_stmt_error($stmt);
-        }
-        $temp_client_id = mysqli_insert_id($conn); 
-
-        // Close the statements and the database connection
-        mysqli_stmt_close($stmt);
-        $_SESSION["signin"]=TRUE;
-        $_SESSION["client_id"]=$temp_client_id;
-        header('Location: index.php');
+// If all information on form is correct and passwords match, commences with insertion into SQL database
+if($status == 0){
+    // Prepare the statements for inserting data into the artists and signin tables
+    $stmt = mysqli_prepare($conn, "INSERT INTO clients771 (username771, clientName771, clientCity771, companyName771, clientCompPassword771) VALUES (?,?,?,?,?)");
+    // Bind the variables to the prepared statements
+    mysqli_stmt_bind_param($stmt, "sssss", $username_entry, $client_name_entry, $client_city_entry, $company_name_entry, $hashed_password);
+    // Execute the prepared statements and check if the data was inserted successfully
+    if (mysqli_stmt_execute($stmt)) {
+    $message2 = "Data inserted into the signin table successfully.";
+    } else {
+    $message2 = "Error inserting data into the signin table: " . mysqli_stmt_error($stmt);
     }
-    //Clears errors if pages is refreshed
-    if(!isset($_POST["Submit"] )){
-        unset($username_error_message, $name_error_message, $username_error_message, $city_error_message, $company_name_error_message, $password_error_message);
-    }
+    $temp_client_id = mysqli_insert_id($conn); 
+
+    // Close the statements and the database connection
+    mysqli_stmt_close($stmt);
+    $_SESSION["signin"]=TRUE;
+    $_SESSION["client_id"]=$temp_client_id;
+    header('Location: index.php');
+}
+
+//Clears errors if pages is refreshed
+if(!isset($_POST["Submit"] )){
+    unset($username_error_message, $name_error_message, $username_error_message, $city_error_message, $company_name_error_message, $password_error_message);
+}
+
 //Sign-up card
 $createAccout_card = <<<SIGNUPCARD
 <!-- Post form-->
