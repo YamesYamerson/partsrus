@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
 <?php 
     // Starts session
     session_start();
@@ -8,8 +13,13 @@
     $client_name='';
     // Variable for error message
     $error = '';
+<<<<<<< HEAD
     $currentpage = $_SERVER['REQUEST_URI'];
 ?>
+=======
+?>
+
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -17,6 +27,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content />
         <meta name="author" content />
+<<<<<<< HEAD
         <title>Parts R Us</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
@@ -24,6 +35,11 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+=======
+        <title>Art By You</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->

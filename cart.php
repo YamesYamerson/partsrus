@@ -1,7 +1,11 @@
 <?php
 // Starts session
 session_start();
+<<<<<<< HEAD
 include "server_login.php";
+=======
+//Set variables
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
 ?>
 
 <!DOCTYPE html>
@@ -115,10 +119,15 @@ include "server_login.php";
                             </div>
                         </form>
                         <?php 
+<<<<<<< HEAD
                             // Set status as "Pending"
                             $status = "Pending";
                             // Insert data into lines771
                             $stmt2 = $conn->prepare("INSERT INTO purchaseorders771 (clientId771, datePO771, status771) VALUES (?, now(), ?)");
+=======
+                            // Insert data into lines771
+                            $stmt2 = $conn->prepare("INSERT clientId771, datePO771, status771 INTO purchaseorders771 VALUES (?,now(),?");
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
                             // Bind the variables to the prepared statement
                             $stmt2->bind_param("is", $client_id, $status);
                             // Execute the prepared statement and check if the data was inserted successfully

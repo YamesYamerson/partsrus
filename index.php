@@ -12,7 +12,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
+<<<<<<< HEAD
         <title>Parts R Us</title>
+=======
+        <title>4140 Assn2 Parts Ordering</title>
+>>>>>>> 12ada200dd7b1c3874ddf0337041eabc7a3508e5
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
