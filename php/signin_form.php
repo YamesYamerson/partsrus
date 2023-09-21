@@ -92,55 +92,16 @@ while ($stmt->fetch()) {
         }
     }
 }
+// Outputs error message if username is not in database
 if($username_exists == FALSE ){
     $errors['client_username_error'] = "Username not found!";
 
 }
-
 // Clears errors on empty form (FIX LATER)
 if(!isset($client_id_entry) && !isset($client_name_entry)){
     unset($errors);
 }
     
-    
-    // Checks to see if Client Id was verified as valid
-
-    // if(!isset($client_id_entry)){
-    //     if ($client_name_entry != null && $client_name_length >= 1 && $client_name_length <= 30) {
-    //         $status = 0;
-    //     } else {
-    //         $errors['client_username_error'] = "Client Username must be between 1-30 characters!";
-    //         $status = 1;
-    //     }
-    // }
-    
-
-    // // Checks password to see if it is compatible with the database
-    // if ($password_entry != null && $password_length >= 7 && $password_length <= 20) {
-    //     $status = 0;
-    // } else {
-    //     $errors['password_error'] = "Password must be between 7-20 characters!";
-    //     $status = 1;
-    // }
-    
-    
-//     // Checks to see if input was verified successfully
-//     if ($client_id_entry == $client_id) { 
-//         if (password_verify($password_entry, $password)) {
-//             $status = 0;
-//             session_start(); // Start the session here
-//             $_SESSION["signin"] = true;
-//             $_SESSION["client_id"] = $client_id;
-//             header('Location: index.php');
-//             exit; // Exit to prevent further script execution
-//         } else {
-//             $errors['password_error'] = "Password is incorrect, please try again!";
-//             $status = 1;
-//         }
-//     }
-// }
-
-
 $signin_output = <<<SIGNINCARD
 <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-2">
     <h1 class="fw-bolder text-center">Sign-In</h1>
