@@ -51,15 +51,21 @@ while ($stmt->fetch()) {
         }
     }
     // Checks to see if Client ID field is empty
-    if(!isset($client_id_entry) === TRUE){
+    if(empty($client_id_entry) && !empty($client_username_entry)){
+        echo "client id empty";
         // Checks to see if Client Username entry is valid
-        if($username_valid === FALSE && ($client_name_length < 1 || $client_name_length > 30)){
-            $errors['client_username_error'] = "Client Username must be 1-30 characters!";
-            break;
+        if($username_valid === FALSE && ($client_name_length > 4 || $client_name_length < 30)){
+            $username_valid === TRUE;
+            echo "client id is not set! AND username is valid";
         }
         // Checks to see if Client Username entry is in DB
-        if($client_name_entry == $username){
-            $username_exists = TRUE;
+        if($username_valid === TRUE){
+            if($client_name_entry == $username){
+                $username_exists = TRUE;
+            }else{
+                $errors['client_username_error'] = "Client Username not found!";
+                break;
+            }
         }
     }
     // Checks to see if use has input text for ClientID and ClientUsername (unsupported action)
@@ -96,7 +102,6 @@ while ($stmt->fetch()) {
         }
     }
 }
-
 //If client id entry is more or less than 5 digits, display error message
 if($id_valid === FALSE && empty($client_name_entry) === TRUE
 ){
@@ -107,7 +112,7 @@ if($id_valid === FALSE && empty($client_name_entry) === TRUE
 if(!isset($client_id_entry) && !isset($client_name_entry)){
     unset($errors);
 }
-    
+// Heredoc to output the contents of form
 $signin_output = <<<SIGNINCARD
 <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-2">
     <h1 class="fw-bolder text-center">Sign-In</h1>
