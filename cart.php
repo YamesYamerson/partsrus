@@ -1,7 +1,12 @@
 <?php
 // Starts session
 session_start();
+<<<<<<< HEAD
 include "server_login.php";
+=======
+//Set variables
+
+>>>>>>> f2edc5b597f11fdf5dedbb8321a998e00a5e5497
 ?>
 
 <!DOCTYPE html>
@@ -23,9 +28,9 @@ include "server_login.php";
     <?php
     // Check if user is signed in and client ID is set in the session
     if (!isset($_SESSION["signin"]) || !isset($_SESSION["client_id"])) {
-        // Redirect the user to the sign-in page
-        header("Location: signin.php");
-        exit();
+        // // Redirect the user to the sign-in page
+        // header("Location: signin.php");
+        // exit();
     }else{
         $client_id = $_SESSION['client_id'];
     }
