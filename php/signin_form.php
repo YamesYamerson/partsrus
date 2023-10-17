@@ -33,6 +33,7 @@ $stmt->store_result();
 $stmt->bind_result($client_id, $password, $username);
 // Loop through users to check for existing usernames and passwords
 while ($stmt->fetch()) {
+
     // Checks to see if Client Username entry field is empty
     if(empty($client_name_entry)){
         // Checks if Client ID entry is valid
@@ -59,14 +60,12 @@ while ($stmt->fetch()) {
             echo "client id is not set! AND username is valid";
         }
         // Checks to see if Client Username entry is in DB
-        if($username_valid === TRUE){
             if($client_name_entry == $username){
                 $username_exists = TRUE;
             }else{
                 $errors['client_username_error'] = "Client Username not found!";
                 break;
             }
-        }
     }
     // Checks to see if use has input text for ClientID and ClientUsername (unsupported action)
     if(!empty($client_id_entry) === TRUE && !empty($client_name_entry)){
@@ -101,13 +100,17 @@ while ($stmt->fetch()) {
             break;
         }
     }
+
+    if(empty($password_entry)){
+        $errors['password_error'] = "Password not set!";
+    }
+
 }
 //If client id entry is more or less than 5 digits, display error message
 if($id_valid === FALSE && empty($client_name_entry) === TRUE
 ){
     $errors['client_id_error'] = "Client ID must be 5 digits!";
 }
-
 // Clears errors on empty form (FIX LATER)
 if(!isset($client_id_entry) && !isset($client_name_entry)){
     unset($errors);
