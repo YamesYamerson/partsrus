@@ -1,12 +1,8 @@
 <?php
 // Starts session
 session_start();
-<<<<<<< HEAD
-include "server_login.php";
-=======
 //Set variables
 
->>>>>>> f2edc5b597f11fdf5dedbb8321a998e00a5e5497
 ?>
 
 <!DOCTYPE html>
