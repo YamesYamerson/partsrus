@@ -112,19 +112,10 @@ session_start();
                                 </table>
                             </div>
                             <div>
-                                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                                <button id="submit" type="submit" name="submit" class="btn btn-primary">Submit</button>
                             </div>
                         </form>
-                        <?php 
-                            // Set status as "Pending"
-                            $status = "Pending";
-                            // Insert data into lines771
-                            $stmt2 = $conn->prepare("INSERT INTO purchaseorders771 (clientId771, datePO771, status771) VALUES (?, now(), ?)");
-                            // Bind the variables to the prepared statement
-                            $stmt2->bind_param("is", $client_id, $status);
-                            // Execute the prepared statement and check if the data was inserted successfully
-                            $stmt2->execute();
-                        ?>
+                        
                     </div>
                 </div>
 
@@ -141,9 +132,30 @@ session_start();
 </html>
 
 <?php
-// Empty code block to be executed when submit button is pushed
 if (isset($_POST['submit'])) {
-    // Add your code here
-    // ...
+    // Set status as "Pending"
+    $status = "Pending";
+
+    // First, get the last inserted PO number
+    $result = $conn->query("SELECT MAX(poNo771) as last_po_no FROM purchaseorders771");
+    $row = $result->fetch_assoc();
+    $last_po_no = isset($row['last_po_no']) ? $row['last_po_no'] : 0; // default to 0 if there's no entry yet
+    $new_po_no = $last_po_no + 1;
+
+    // Prepare the SQL statement with the new PO number. Note the corrected SQL syntax.
+    $stmt2 = $conn->prepare("INSERT INTO purchaseorders771 (poNo771, clientId771, datePO771, status771) VALUES (?, ?, now(), ?)");
+
+    // Bind the variables to the prepared statement
+    $stmt2->bind_param("iis", $new_po_no, $client_id, $status);
+
+    // Execute the prepared statement and check if the data was inserted successfully
+    if($stmt2->execute()){
+        // The record was successfully inserted
+    } else {
+        // There was an error in the insertion
+        echo "Error: " . $stmt2->error;
+    }
+    // Close statement
+    $stmt2->close();
 }
 ?>

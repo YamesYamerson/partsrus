@@ -1,152 +1,96 @@
-<?php 
-// Accesses MAMP server and MySQL server and accesses
+<?php
+// Start the session at the very top of your script
+session_start();
+
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'php/server_login.php';
+
 // Initialize variables
-// Errors array
-$errors = array (
-    'client_id_error' => '',
-    'client_username_error' => '',
-    'password_error' => '',
-    );
-// Error handling boolean values
-$id_valid = FALSE;
-$id_exists = FALSE;
-$username_valid = FALSE;
-$username_exists = FALSE;
-$password_valid = FALSE;
-$password_verified = FALSE;
+$client_id_entry = $client_name_entry = $password_entry = "";
+$errors = array('client_id_error' => '', 'client_username_error' => '', 'password_error' => '');
+
 // Check if the form was submitted
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Form submitted variables with whitespace removed
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $client_id_entry = trim($_POST["ClientId"]);
-    $password_entry = trim($_POST["Password"]);
     $client_name_entry = trim($_POST["ClientUsername"]);
-    // Form submitted variable string lengths
-    $client_id_length = strlen($client_id_entry);
-    $client_name_length = strlen($client_name_entry);
-    $password_length = strlen($password_entry);
-}
-// Create a prepared statement to get data from the clients771 table
-$stmt = $conn->prepare("SELECT clientId771, clientCompPassword771, username771 FROM clients771");
-$stmt->execute();
-$stmt->store_result();
-$stmt->bind_result($client_id, $password, $username);
-// Loop through users to check for existing usernames and passwords
-while ($stmt->fetch()) {
+    $password_entry = trim($_POST["Password"]);
 
-    // Checks to see if Client Username entry field is empty
-    if(empty($client_name_entry)){
-        // Checks if Client ID entry is valid
-        if($id_valid === FALSE && $client_id_length == 5){
-            $id_valid = TRUE;
-        }
-        // Checks to see if Client ID entry is in DB if ID is valid
-        if ($id_valid === TRUE) {
-            if($client_id_entry == $client_id){
-                $id_exists = TRUE;
-            // Sends client error message if Client ID is not found
-            }else{
-                $errors['client_id_error'] = "Client ID not found!";
-                break;
+    // Validate inputs
+    if (empty($client_id_entry) && empty($client_name_entry)) {
+        // Both fields are empty
+        $errors['client_id_error'] = "Please enter Client ID or Client Username.";
+    } elseif (!empty($client_id_entry) && !empty($client_name_entry)) {
+        // Both fields are filled
+        $errors['client_id_error'] = "Please fill in only one field: Client ID or Client Username.";
+    } else {
+        // At least one field is filled, proceed to check with the database
+        $sql = "SELECT clientId771, clientCompPassword771, username771 FROM clients771 WHERE ";
+        $sql .= !empty($client_id_entry) ? "clientId771 = ?" : "username771 = ?";
+
+        if ($stmt = $conn->prepare($sql)) {
+            $param = !empty($client_id_entry) ? $client_id_entry : $client_name_entry;
+            $stmt->bind_param("s", $param);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows == 1) {
+                $stmt->bind_result($client_id, $hashed_password, $username);
+                $stmt->fetch();
+                if (password_verify($password_entry, $hashed_password)) {
+                    // Password is correct, start a new session
+                    $_SESSION["loggedin"] = true;
+                    $_SESSION["client_id"] = $client_id; // Store client ID in session
+
+                    // Redirect to your desired page
+                    header("location: index.php");
+                    exit;
+                } else {
+                    $errors['password_error'] = "Invalid password.";
+                }
+            } else {
+                $field_error = !empty($client_id_entry) ? 'client_id_error' : 'client_username_error';
+                $errors[$field_error] = "No account found with that ID/Username.";
             }
+            $stmt->close();
+        } else {
+            echo "Oops! Something went wrong. Please try again later.";
         }
     }
-    // Checks to see if Client ID field is empty
-    if(empty($client_id_entry) && !empty($client_username_entry)){
-        echo "client id empty";
-        // Checks to see if Client Username entry is valid
-        if($username_valid === FALSE && ($client_name_length > 4 || $client_name_length < 30)){
-            $username_valid === TRUE;
-            echo "client id is not set! AND username is valid";
-        }
-        // Checks to see if Client Username entry is in DB
-            if($client_name_entry == $username){
-                $username_exists = TRUE;
-            }else{
-                $errors['client_username_error'] = "Client Username not found!";
-                break;
-            }
-    }
-    // Checks to see if use has input text for ClientID and ClientUsername (unsupported action)
-    if(!empty($client_id_entry) === TRUE && !empty($client_name_entry)){
-        unset($errors);
-        $errors['client_id_error'] = "Enter text in one field ONLY: Client Id or Client Username";
-        break;
-    }
-    // Checks to see if either Client ID or Username exist in database and have been confirmed
-    if($id_exists === TRUE || $username_exists === TRUE){
-            // Checks to see if password is valid format
-        if ($password_length >= 7 && $password_length <= 20) {
-            $password_valid = TRUE;
-        }else{
-            $errors['password_error'] = "Password must be between 7-20 characters!";
-            break;
-        }
-    }
-    // If a password is a valid format, check to see if it can be verified
-    if($password_valid === TRUE){
-        // Signs in user if password can be verified
-        if(password_verify($password_entry, $password)) {
-            $password_verified = TRUE;
-            session_start(); // Start the session here
-            // Set Session Variables
-            $_SESSION["signin"] = TRUE;
-            $_SESSION["client_id"] = $client_id;
-            header('Location: index.php');
-            exit; // Exit to prevent further script execution
-        // Exits loop if password for detected client ID or username exists
-        }else{
-            $errors['password_error'] = "Incorrect Password!"; // Error message if password is incorrect
-            break;
-        }
-    }
+}
 
-    if(empty($password_entry)){
-        $errors['password_error'] = "Password not set!";
-    }
+$conn->close();
+?>
 
-}
-//If client id entry is more or less than 5 digits, display error message
-if($id_valid === FALSE && empty($client_name_entry) === TRUE
-){
-    $errors['client_id_error'] = "Client ID must be 5 digits!";
-}
-// Clears errors on empty form (FIX LATER)
-if(!isset($client_id_entry) && !isset($client_name_entry)){
-    unset($errors);
-}
-// Heredoc to output the contents of form
-$signin_output = <<<SIGNINCARD
+<!-- HTML for form -->
 <div class="bg-light rounded-3 py-5 px-4 px-md-5 mb-2">
     <h1 class="fw-bolder text-center">Sign-In</h1>
     <div class="row gx-5 justify-content-center">
-        <div class="col-lg-8 col-xl-6 ">   
-        <!-- Outputs Error Message --> 
-        <form method="post">
-            <br/>
-            <p class="text-center text-danger"> {$errors['client_id_error']} </p>
-            <div class="form-floating mb-2">
-                <input type="text" name="ClientId" id="floatingClientId" placeholder="Client ID" class="form-control" value="$client_id_entry" />
-                <label for="floatingClientId">Enter Client ID</label>
-            </div>
-            <p class="text-center">or</p>
-            <p class="text-center text-danger"> {$errors['client_username_error']} </p>
-            <div class="form-floating mb-2">
-                <input type="text" name="ClientUsername" id="floatingUsername" placeholder="Client Name" class="form-control" value="$client_name_entry" />
-                <label for="floatingUsername">Enter Client Username</label>
-            </div>
-            <p class="text-center text-danger"> {$errors['password_error']} </p>
-            <div class="form-floating mb-2">
-                <input type="password" name="Password" id="floatingPassword" class="form-control" placeholder="Enter Company Password" value="$password_entry" />
-                <label for="floatingPassword">Enter Password</label>
-            </div>
-            <br>
-            <div class="d-grid"><input name="Submit" type="submit" class="btn btn-secondary btn-lg" value="Submit" /></div>                           
-        </form>
+        <div class="col-lg-8 col-xl-6">
+            <form method="post">
+                <div class="form-floating mb-2">
+                    <input type="text" name="ClientId" id="floatingClientId" placeholder="Client ID" class="form-control" value="<?php echo $client_id_entry; ?>" />
+                    <label for="floatingClientId">Enter Client ID</label>
+                    <p class="text-center text-danger"><?php echo $errors['client_id_error']; ?></p>
+                </div>
+                <p class="text-center">or</p>
+                <div class="form-floating mb-2">
+                    <input type="text" name="ClientUsername" id="floatingUsername" placeholder="Client Username" class="form-control" value="<?php echo $client_name_entry; ?>" />
+                    <label for="floatingUsername">Enter Client Username</label>
+                    <p class="text-center text-danger"><?php echo $errors['client_username_error']; ?></p>
+                </div>
+                <div class="form-floating mb-2">
+                    <input type="password" name="Password" id="floatingPassword" class="form-control" placeholder="Enter Company Password" />
+                    <label for="floatingPassword">Enter Password</label>
+                    <p class="text-center text-danger"><?php echo $errors['password_error']; ?></p>
+                </div>
+                <div class="d-grid">
+                    <input name="Submit" type="submit" class="btn btn-secondary btn-lg" value="Submit" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-SIGNINCARD;
-echo $signin_output; // Outputs Sign-In form
-
-$conn->close(); // Close connection
-?>
