@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->fetch();
                 if (password_verify($password_entry, $hashed_password)) {
                     // Password is correct, start a new session
-                    $_SESSION["loggedin"] = true;
+                    $_SESSION["signin"] = TRUE;
                     $_SESSION["client_id"] = $client_id; // Store client ID in session
 
                     // Redirect to your desired page
