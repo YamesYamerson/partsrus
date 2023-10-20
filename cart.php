@@ -2,7 +2,7 @@
 // Starts session
 session_start();
 //Set variables
-
+echo '<pre>'; var_dump($_SESSION); echo '</pre>'
 ?>
 
 <!DOCTYPE html>
@@ -138,7 +138,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 $stmt2_complete = FALSE;
-
+// $new_po_no = '';
 if (isset($_POST['submit'])) {
     // Set status as "Pending"
     $status = "Pending";
@@ -164,45 +164,30 @@ if (isset($_POST['submit'])) {
         echo "Error: " . $stmt2->error;
     }
 
-}
-
-if($stmt2_complete === TRUE){
-    // The record was successfully inserted
-
-    // Now, we insert the line items
-    $lineNo = 1; // Initialize line number
-    foreach ($_SESSION['cart'] as $item) {
-        $partNo = $item['partno'];
-        $quantity = $item['quantity'];
-
-        // Since lineId771 might be an AUTO_INCREMENT column, it may not need to be included in the INSERT query.
-        // However, if lineId771 needs to be manually input, you'll need to handle its unique value generation.
-
-        // Prepare the INSERT statement for the line item.
-        // Assuming lineNo771 should be incremented with each item in the order, we use the $lineNo variable.
-        $stmt3 = $conn->prepare("INSERT INTO lines771 (poNo771, partNo771, quantity771, linesNo771) VALUES (?, ?, ?, ?)");
-
-        // Bind the variables to the prepared statement
-        $stmt3->bind_param("iiii", $new_po_no, $partNo, $quantity, $lineNo);
-
-        // Execute the prepared statement and check if the data was inserted successfully
-        if($stmt3->execute()){
-            // The record was successfully inserted
-        } else {
-            // There was an error in the insertion
-            echo "Error: " . $stmt3->error;
+    if($stmt2_complete){
+        // Insert into lines771
+        $lineNo = 1;
+        foreach ($_SESSION['cart'] as $item) {
+            $partNo = $item['partno'];
+            $quantity = $item['quantity'];
+            echo $partNo . " " .  $quantity;
+            $stmt3 = $conn->prepare("INSERT INTO lines771 (poNo771, partNo771, quantity771, lineNo771) VALUES (?, ?, ?, ?)");
+            $stmt3->bind_param("iiii", $new_po_no, $partNo, $quantity, $lineNo);
+            $stmt3->execute();
+            $stmt3->close();
+            
+            $lineNo++;
         }
+    
+        // Optionally, you can empty the cart after the items have been inserted into the database
+        $_SESSION['cart'] = array();
+        // Header to Success Page
+        header("location: cart_success.php");
+        
 
-        // Close statement
-        $stmt3->close();
-
-        $lineNo++; // Increment line number for the next item
+    } else {
+        // There was an error in the insertion of the purchase order
+        echo "Error: " . $stmt2->error;
     }
-
-    // Optionally, you can empty the cart after the items have been inserted into the database
-    $_SESSION['cart'] = array();
-} else {
-    // There was an error in the insertion of the purchase order
-    echo "Error: " . $stmt2->error;
 }
 ?>

@@ -1,7 +1,7 @@
 <?php 
     //Sign in and page array variables
     $host = 'yamesy.com:3306';
-    $database = 'lvrukr54_partsrus';
+    $database = 'lvrukr54_parts_r_us';
     $username = 'lvrukr54_admin';
     $password = 'js?MFDwx*Ap?';
     //Connects to database
