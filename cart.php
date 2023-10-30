@@ -1,6 +1,8 @@
 <?php
 // Starts session
 session_start();
+$_SESSION["tempPo"] = "";
+
 // Turn on output buffering
 ob_start();
 ?>
