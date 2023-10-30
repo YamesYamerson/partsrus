@@ -12,8 +12,9 @@
                 <li class="nav-item mx-2"><a class="nav-link" href="about.php">About</a></li>
                 <li class="nav-item mx-2"><a class="nav-link" href="purchase_orders.php">Orders</a></li>
                 <li class="nav-item mx-2"><?php include "php/login_create_account_button.php"; ?></li>
-                <li class="nav-item mx-2"><?php include "php/navbar_cart_icon.php"; ?></li>
-            </ul>
+                <li class="nav-item mx-2 ps-5"><?php include "php/navbar_cart_icon.php"; ?></li>
+           </ul>
+           
         </div>
     </div>
 </nav>

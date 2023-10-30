@@ -1,0 +1,43 @@
+Updates clients771 moneyOwed771
+---DONT COPY!!! ---
+
+DELIMITER //
+
+CREATE TRIGGER after_purchaseorders771_insert AFTER INSERT ON purchaseorders771
+FOR EACH ROW 
+BEGIN
+
+    DECLARE totalAmount DECIMAL(64,2);
+
+    -- Calculate the total amount for the newly inserted purchase order
+    SELECT SUM(l.quantity771 * p.currentPrice771) INTO totalAmount 
+    FROM lines771 l
+    INNER JOIN parts771 p ON l.partNo771 = p.partNo771
+    WHERE l.poNo771 = NEW.poNo771;
+
+    -- Update the moneyOwed771 field in the clients771 table based on the calculated totalAmount
+    UPDATE clients771 
+    SET moneyOwed771 = moneyOwed771 + totalAmount
+    WHERE clientId771 = NEW.clientId771;
+
+END //
+
+DELIMITER ;
+
+
+---DONT COPY!!! ---
+Updates quantity on hand after a PO is placed
+---DONT COPY!!! ---
+
+
+DELIMITER //
+CREATE TRIGGER reduce_stock_after_insert_line
+AFTER INSERT ON lines771
+FOR EACH ROW 
+BEGIN
+    UPDATE parts771
+    SET quantityOnHand771 = quantityOnHand771 - NEW.quantity771
+    WHERE partNo771 = NEW.partNo771;
+END;
+//
+DELIMITER ;

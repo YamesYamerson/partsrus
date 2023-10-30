@@ -135,6 +135,7 @@ if (isset($_POST["Submit"])) {
     if(!isset($_POST["Submit"] )){
         unset($username_error_message, $name_error_message, $username_error_message, $city_error_message, $company_name_error_message, $password_error_message);
     }
+    
 //Sign-up card
 $createAccout_card = <<<SIGNUPCARD
 <!-- Post form-->

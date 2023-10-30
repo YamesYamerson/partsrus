@@ -1,8 +1,8 @@
 <?php
 // Starts session
 session_start();
-//Set variables
-// echo '<pre>'; var_dump($_SESSION); echo '</pre>'
+// Turn on output buffering
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -77,4 +77,6 @@ session_start();
 <?php if (isset($_POST['submit'])) {
     header("location: index.php");
 }
+// End output buffering and flush the buffer
+ob_end_flush();
 ?>

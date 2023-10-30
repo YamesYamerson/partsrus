@@ -13,7 +13,7 @@
             <div class="card h-100">
                 <!-- Product image-->
                 <div class="mx-2 my-2 text-center">
-                    <img class="card-img-top img-fluid" style="max-height: 200px; width: auto;" src="img/$partImage771" alt="...">
+                    <img class="card-img-top img-fluid" style="height: 15w; width: 100%, object-fit: cover;" src="img/$partImage771" alt="...">
                 </div>
                 <!-- Product details-->
                 <div class="card-body">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <!-- Product actions-->
-                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="card-footer pt-0 border-top-0 bg-transparent">
                     <div class="text-center">
                         <a href="partinfo.php?partno=$partNo771">
                             <button type="button" class="btn btn-primary mt-auto">More Info</button>

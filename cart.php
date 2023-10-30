@@ -1,8 +1,8 @@
 <?php
 // Starts session
 session_start();
-//Set variables
-echo '<pre>'; var_dump($_SESSION); echo '</pre>'
+// Turn on output buffering
+ob_start();
 ?>
 
 <!DOCTYPE html>
@@ -133,9 +133,9 @@ echo '<pre>'; var_dump($_SESSION); echo '</pre>'
 
 <?php
 // Error Checking
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 $stmt2_complete = FALSE;
 // $new_po_no = '';
@@ -190,4 +190,6 @@ if (isset($_POST['submit'])) {
         echo "Error: " . $stmt2->error;
     }
 }
+// End output buffering and flush the buffer
+ob_end_flush();
 ?>
